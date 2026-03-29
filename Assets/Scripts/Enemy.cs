@@ -8,6 +8,8 @@ public class Enemy : MonoBehaviour
     private GameObject player;
     
     public bool isStunned = false; 
+    
+    public float deathYThreshold = -10f; 
 
     private void Awake()
     {
@@ -28,8 +30,18 @@ public class Enemy : MonoBehaviour
             dir.Normalize(); 
             rb.AddForce(dir * speed);
         }
+        
+        CheckOutOfBounds();
     }
     
+    private void CheckOutOfBounds()
+    {
+        if (transform.position.y < deathYThreshold)
+        {
+            Destroy(gameObject); 
+        }
+    }
+
     public void StunEnemy(float duration)
     {
         StartCoroutine(StunRoutine(duration));
@@ -40,6 +52,7 @@ public class Enemy : MonoBehaviour
         isStunned = true;
         
         rb.linearVelocity = Vector3.zero;
+        
         rb.isKinematic = true; 
         
         yield return new WaitForSeconds(duration);

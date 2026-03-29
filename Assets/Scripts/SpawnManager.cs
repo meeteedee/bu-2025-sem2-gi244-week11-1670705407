@@ -1,93 +1,85 @@
 using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UIElements;
+
+[System.Serializable]
+public class Wave 
+{
+    public int totalSpawnEnemies;
+    public int numberOfRandomSpawnPoint;
+    public float delayStart;
+    public float spawnInterval;
+    public int numberOfPowerUp;
+}
 
 public class SpawnManager : MonoBehaviour
 {
     public Transform[] spawnPoints;
     public GameObject enemyPrefab;
-    public Rigidbody box;
-    public Coroutine goodbyeRoutine;
+    public GameObject powerUpPrefab;
+
+    public Wave[] waves;
+
     void Start()
     {
-        StartCoroutine(SpawnRoutine());
-        //InvokeRepeating(nameof(RandomSpawn), 0, 5);
-        //StartCoroutine(Hello());
-        //StartCoroutine(Goodbye());
-        //StartCoroutine(MoveBox());
-        //goodbyeRoutine = StartCoroutine(Goodbye());
-
+        StartCoroutine(SpawnWaveRoutine());
     }
 
-    IEnumerator SpawnRoutine()
+    IEnumerator SpawnWaveRoutine()
     {
-        yield return new WaitForSeconds(5);
-        while (true)
+        for (int i = 0; i < waves.Length; i++)
         {
-            RandomSpawn();
-            yield return new WaitForSeconds(3);
-        }
-        
-    }
-    void RandomSpawn()
-    {
-        var index = Random.Range(0, spawnPoints.Length);
-        var spawnPoint = spawnPoints[index];
-        Instantiate(enemyPrefab, spawnPoint.position, Quaternion.identity);
-    }
+            Wave currentWave = waves[i];
 
-    private void Update()
-    {
-        /*if (Time.time > 5)
-            if (goodbyeRoutine != null)
+            for (int p = 0; p < currentWave.numberOfPowerUp; p++)
             {
-                StartCoroutine(goodbyeRoutine);
-            }*/
-    }
+                SpawnRandomPowerUp();
+            }
 
-    /*IEnumerator MoveBox()
-    {
-        while (true)
-        {
-        box.linearVelocity = 10 * Vector3.up;
-        yield return new WaitForSeconds(3);
-        box.linearVelocity = 10 * Vector3.right;
-        yield return new WaitForSeconds(3);
-        box.linearVelocity = 10 * Vector3.down;
-        yield return new WaitForSeconds(3);
-        box.linearVelocity = 10 * Vector3.left;
-        }
-    }
-    IEnumerator Goodbye()
-    {
-        while (true)
-        {
-            Debug.Log("Bye" + Time.frameCount + " " + Time.time);
-            //yield return new WaitForSeconds(1);
-            yield return null();
-            //if (Time.time > 5)
-           // {
-          //      yield break;
-          //  }
-            yield return Hello();
+            List<Transform> selectedSpawnPoints = GetRandomSpawnPoints(currentWave.numberOfRandomSpawnPoint);
+
+            yield return new WaitForSeconds(currentWave.delayStart);
+
+            for (int e = 0; e < currentWave.totalSpawnEnemies; e++)
+            {
+                int randomIndex = Random.Range(0, selectedSpawnPoints.Count);
+                Transform sp = selectedSpawnPoints[randomIndex];
+                
+                Instantiate(enemyPrefab, sp.position, sp.rotation);
+
+                yield return new WaitForSeconds(currentWave.spawnInterval);
+            }
+
+            yield return new WaitUntil(() => GameObject.FindGameObjectsWithTag("Enemy").Length == 0);
             
+            yield return new WaitForSeconds(2f); 
         }
-        
     }
-    IEnumerator Hello()
+    
+    List<Transform> GetRandomSpawnPoints(int count)
     {
-        Debug.Log("Hello" + Time.frameCount);
-        Debug.Log("Hello" + Time.frameCount);
-        Debug.Log("Hello" + Time.frameCount);
-        yield return null;
-        Debug.Log("Hello" + Time.frameCount);
-        yield return null;
-        Debug.Log("Hello" + Time.frameCount);
-        yield return null;
-        yield return null;
-        yield return null;
-        yield return null;
-        yield return null;
-        Debug.Log("Hello" + Time.frameCount);
-    }*/
+        List<Transform> availablePoints = new List<Transform>(spawnPoints);
+        List<Transform> selected = new List<Transform>();
+
+        for (int i = 0; i < count; i++)
+        {
+            if (availablePoints.Count > 0)
+            {
+                int randomIndex = Random.Range(0, availablePoints.Count);
+                selected.Add(availablePoints[randomIndex]);
+                availablePoints.RemoveAt(randomIndex);
+            }
+        }
+        return selected;
+    }
+    
+    void SpawnRandomPowerUp()
+    {
+        float randomX = Random.Range(-10f, 10f);
+        float randomZ = Random.Range(-10f, 10f);
+        
+        Vector3 randomPos = new Vector3(randomX, 0.5f, randomZ); 
+        
+        Instantiate(powerUpPrefab, randomPos, Quaternion.identity);
+    }
 }
