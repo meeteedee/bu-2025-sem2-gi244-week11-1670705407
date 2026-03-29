@@ -43,7 +43,7 @@ public class PlayerController : MonoBehaviour
             {
                 var rb = collision.gameObject.GetComponent<Rigidbody>();
                 var dir = collision.transform.position - transform.position;
-                rb.AddForce(100 * dir.normalized, ForceMode.Impulse);
+                rb.AddForce(20 * dir.normalized, ForceMode.Impulse);
             }
 
         }

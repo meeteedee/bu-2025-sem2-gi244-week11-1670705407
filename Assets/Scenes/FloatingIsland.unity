@@ -625,7 +625,7 @@ GameObject:
   - component: {fileID: 1231960640}
   m_Layer: 0
   m_Name: Player
-  m_TagString: Untagged
+  m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -948,6 +948,19 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
+--- !u!114 &1477502814
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1477502808}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bab669b357a51024a8505250fbffb19e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::StunPowerUp
+  stunDuration: 5
 --- !u!1 &1651429376
 GameObject:
   m_ObjectHideFlags: 0
@@ -1159,6 +1172,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 3709808119504899638, guid: 8cd96a1609dc5a04f8f54162c32cab4a, type: 3}
       insertIndex: -1
       addedObject: {fileID: 1477502809}
+    - targetCorrespondingSourceObject: {fileID: 3709808119504899638, guid: 8cd96a1609dc5a04f8f54162c32cab4a, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1477502814}
   m_SourcePrefab: {fileID: 100100000, guid: 8cd96a1609dc5a04f8f54162c32cab4a, type: 3}
 --- !u!1001 &7305732181041295649
 PrefabInstance:

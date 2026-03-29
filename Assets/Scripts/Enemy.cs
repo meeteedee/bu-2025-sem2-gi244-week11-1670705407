@@ -1,3 +1,4 @@
+using System.Collections;
 using UnityEngine;
 
 public class Enemy : MonoBehaviour
@@ -5,6 +6,8 @@ public class Enemy : MonoBehaviour
     public float speed = 3f;
     private Rigidbody rb;
     private GameObject player;
+    
+    public bool isStunned = false; 
 
     private void Awake()
     {
@@ -16,12 +19,32 @@ public class Enemy : MonoBehaviour
     {
         
     }
-
-    // Update is called once per frame
+    
     void Update()
     {
-        Vector3 dir = player.transform.position - transform.position; //5
-        dir.Normalize(); //1
-        rb.AddForce(dir * speed);
+        if (!isStunned && player != null)
+        {
+            Vector3 dir = player.transform.position - transform.position; 
+            dir.Normalize(); 
+            rb.AddForce(dir * speed);
+        }
+    }
+    
+    public void StunEnemy(float duration)
+    {
+        StartCoroutine(StunRoutine(duration));
+    }
+    
+    private IEnumerator StunRoutine(float duration)
+    {
+        isStunned = true;
+        
+        rb.linearVelocity = Vector3.zero;
+        rb.isKinematic = true; 
+        
+        yield return new WaitForSeconds(duration);
+        rb.isKinematic = false; 
+        
+        isStunned = false;
     }
 }
